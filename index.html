@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier de restauration — Scans entomologiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #131110;
+    --panel: #1c1916;
+    --panel-2: #211d19;
+    --line: #3a332c;
+    --copper: #c97c4a;
+    --copper-dim: #8a6a4b;
+    --text: #ece4d6;
+    --text-dim: #9c9184;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--copper); color: #14120f; }
+
+  /* --- Header --- */
+  header{
+    padding: 28px 6vw 20px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand{
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .brand b{ color: var(--copper); }
+  nav a{
+    color: var(--text-dim);
+    text-decoration:none;
+    font-size: 13px;
+    margin-left: 28px;
+    font-family:'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  nav a:hover{ color: var(--text); }
+
+  /* --- Hero --- */
+  .hero{
+    padding: 8vh 6vw 6vh;
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero-copy .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--copper);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display:block;
+  }
+  .hero-copy h1{
+    font-family:'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(34px, 5vw, 64px);
+    line-height: 1.05;
+    max-width: 14ch;
+    margin-bottom: 20px;
+  }
+  .hero-copy p{
+    color: var(--text-dim);
+    max-width: 48ch;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* --- Compare component --- */
+  .compare{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    cursor: ew-resize;
+    background: #0f0d0b;
+    user-select: none;
+    touch-action: none;
+  }
+  .compare-hero{ aspect-ratio: 16/8; }
+  .compare svg{ position:absolute; top:0; left:0; width:100%; height:100%; display:block; }
+  .compare-after{ position:absolute; inset:0; }
+  .compare-before{ position:absolute; inset:0; }
+  .compare-handle{
+    position:absolute; top:0; bottom:0; left:50%;
+    width: 2px; background: var(--copper);
+    transform: translateX(-1px);
+    pointer-events:none;
+  }
+  .compare-handle::after{
+    content:'';
+    position:absolute; top:50%; left:50%;
+    width: 40px; height:40px;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: var(--copper);
+    border: 3px solid var(--bg);
+  }
+  .compare-handle::before{
+    content:'‹ ›';
+    position:absolute; top:50%; left:50%;
+    transform: translate(-50%,-52%);
+    z-index:2;
+    color: var(--bg);
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+    font-weight:700;
+    letter-spacing: 0.1em;
+  }
+  .compare-tag{
+    position:absolute; bottom:14px; left:14px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    background: rgba(19,17,16,0.82);
+    border: 1px solid var(--line);
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: var(--text-dim);
+    pointer-events:none;
+  }
+  .compare-side-label{
+    position:absolute; top:14px;
+    font-family:'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: rgba(19,17,16,0.82);
+    border: 1px solid var(--line);
+    pointer-events:none;
+  }
+  .label-before{ left: 14px; color: var(--text-dim); }
+  .label-after{ right: 14px; color: var(--copper); }
+
+  /* --- Grid section --- */
+  .grid-section{
+    padding: 6vh 6vw 10vh;
+  }
+  .grid-section h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .grid-section .sub{
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 36px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+  @media (max-width: 760px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+  .card-caption{
+    margin-top: 10px;
+    display:flex; justify-content: space-between; align-items:baseline;
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+  }
+  .card-caption .name{ color: var(--text); }
+  .card-caption .meta{ color: var(--text-dim); }
+
+  footer{
+    padding: 30px 6vw 50px;
+    border-top: 1px solid var(--line);
+    color: var(--text-dim);
+    font-size: 12px;
+    font-family:'Space Mono', monospace;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><b>●</b> ATELIER SCAN — POST-PRODUCTION</div>
+  <nav>
+    <a href="#specimens">Spécimens</a>
+    <a href="#">À propos</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Restauration &amp; traitement de scans</span>
+    <h1>Chaque spécimen, du brut au fini.</h1>
+    <p>Comparateurs interactifs avant / après pour présenter le travail de nettoyage, de recalcul de texture et de correction colorimétrique effectué sur chaque scan d'insecte. Glissez le curseur pour comparer.</p>
+  </div>
+  <div class="compare compare-hero" id="hero-compare">
+    <div class="compare-after"></div>
+    <div class="compare-before"></div>
+    <div class="compare-handle"></div>
+    <span class="compare-side-label label-before">Brut</span>
+    <span class="compare-side-label label-after">Traité</span>
+    <span class="compare-tag">SPÉCIMEN N°00 — LUCANUS CERVUS — SCAN 10K</span>
+  </div>
+</section>
+
+<section class="grid-section" id="specimens">
+  <h2>Spécimens traités</h2>
+  <div class="sub">Glissez chaque curseur pour comparer le scan brut et le rendu final.</div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>
+  <span>ATELIER SCAN © 2026</span>
+  <span>Prototype — à remplacer par vos propres visuels</span>
+</footer>
+
+<script>
+/* ---------- Silhouettes SVG placeholder (à remplacer par vos scans réels) ---------- */
+function bugSVG({grain=false, tone='#8f8578', accent='#c97c4a', bg='#100e0c'}){
+  const noise = grain ? `
+    <filter id="n${Math.random()}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0"/></filter>
+  ` : '';
+  return `
+  <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">
+    <defs>${noise}</defs>
+    <rect width="400" height="250" fill="${bg}"/>
+    <ellipse cx="200" cy="140" rx="70" ry="95" fill="${tone}" opacity="0.9"/>
+    <ellipse cx="200" cy="70" rx="34" ry="30" fill="${tone}"/>
+    <line x1="200" y1="45" x2="180" y2="15" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+    <line x1="200" y1="45" x2="220" y2="15" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+    <line x1="150" y1="120" x2="90" y2="100" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="150" y1="150" x2="80" y2="150" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="150" y1="180" x2="95" y2="205" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="250" y1="120" x2="310" y2="100" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="250" y1="150" x2="320" y2="150" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="250" y1="180" x2="305" y2="205" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="200" y1="55" x2="200" y2="225" stroke="${bg}" stroke-width="2" opacity="0.5"/>
+    ${grain ? `<rect width="400" height="250" filter="url(#n)"/>` : `<ellipse cx="175" cy="110" rx="20" ry="30" fill="${accent}" opacity="0.35"/>`}
+  </svg>`;
+}
+
+function makeCompare(el, {before, after, tag}){
+  el.querySelector('.compare-after').innerHTML = after;
+  el.querySelector('.compare-before').innerHTML = before;
+  const beforeLayer = el.querySelector('.compare-before');
+  const handle = el.querySelector('.compare-handle');
+  el.querySelector('.compare-tag').textContent = tag;
+  set(50);
+  function set(pct){
+    pct = Math.max(0, Math.min(100, pct));
+    beforeLayer.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+    handle.style.left = pct + '%';
+  }
+  let dragging = false;
+  function pctFromEvent(e){
+    const rect = el.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    return (x / rect.width) * 100;
+  }
+  el.addEventListener('pointerdown', e => { dragging = true; set(pctFromEvent(e)); });
+  window.addEventListener('pointermove', e => { if(dragging) set(pctFromEvent(e)); });
+  window.addEventListener('pointerup', () => dragging = false);
+}
+
+/* Hero */
+makeCompare(document.getElementById('hero-compare'), {
+  before: bugSVG({grain:true, tone:'#6b6154', accent:'#7a6a52', bg:'#100e0c'}),
+  after: bugSVG({grain:false, tone:'#b08a5e', accent:'#e0975c', bg:'#171310'}),
+  tag: 'SPÉCIMEN N°00 — LUCANUS CERVUS — SCAN 10K'
+});
+
+/* Grid specimens */
+const specimens = [
+  {name:'Spécimen N°01', meta:'Carabidae · Scan 6K · Nettoyage maillage'},
+  {name:'Spécimen N°02', meta:'Lucanidae · Scan 8K · Recalcul textures'},
+  {name:'Spécimen N°03', meta:'Cetoniinae · Scan 6K · Correction couleur'},
+  {name:'Spécimen N°04', meta:'Curculionidae · Scan 10K · Réduction bruit'},
+];
+const grid = document.getElementById('grid');
+specimens.forEach((s, i) => {
+  const card = document.createElement('div');
+  card.innerHTML = `
+    <div class="compare" id="c${i}">
+      <div class="compare-after"></div>
+      <div class="compare-before"></div>
+      <div class="compare-handle"></div>
+      <span class="compare-side-label label-before">Brut</span>
+      <span class="compare-side-label label-after">Traité</span>
+      <span class="compare-tag">${s.name}</span>
+    </div>
+    <div class="card-caption">
+      <span class="name">${s.name}</span>
+      <span class="meta">${s.meta}</span>
+    </div>
+  `;
+  grid.appendChild(card);
+  makeCompare(card.querySelector('.compare'), {
+    before: bugSVG({grain:true, tone:'#6b6154', accent:'#7a6a52', bg:'#100e0c'}),
+    after: bugSVG({grain:false, tone:'#b08a5e', accent:'#e0975c', bg:'#171310'}),
+    tag: s.name + ' — ' + s.meta
+  });
+});
+</script>
+
+</body>
+</html>
