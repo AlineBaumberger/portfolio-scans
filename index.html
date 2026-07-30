@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atelier de restauration — Scans entomologiques</title>
+<title>Macrophotographie — Scans de spécimens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #131110;
-    --panel: #1c1916;
-    --panel-2: #211d19;
-    --line: #3a332c;
-    --copper: #c97c4a;
-    --copper-dim: #8a6a4b;
-    --text: #ece4d6;
-    --text-dim: #9c9184;
+    --bg: #0d0f12;
+    --panel: #15181c;
+    --panel-2: #1a1e22;
+    --line: #292e34;
+    --accent: #8ca3b3;
+    --accent-dim: #566873;
+    --text: #e6e4df;
+    --text-dim: #83807a;
   }
   *{ box-sizing: border-box; margin:0; padding:0; }
   html{ scroll-behavior: smooth; }
@@ -25,9 +25,8 @@
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  ::selection{ background: var(--copper); color: #14120f; }
+  ::selection{ background: var(--accent); color: #14120f; }
 
-  /* --- Header --- */
   header{
     padding: 28px 6vw 20px;
     display:flex; justify-content:space-between; align-items:center;
@@ -40,18 +39,18 @@
     text-transform: uppercase;
     color: var(--text-dim);
   }
-  .brand b{ color: var(--copper); }
+  .brand b{ color: var(--accent); }
   nav a{
     color: var(--text-dim);
     text-decoration:none;
-    font-size: 13px;
-    margin-left: 28px;
-    font-family:'Space Mono', monospace;
-    letter-spacing: 0.05em;
+    font-size: 14px;
+    margin-left: 32px;
+    font-family:'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0;
   }
   nav a:hover{ color: var(--text); }
 
-  /* --- Hero --- */
   .hero{
     padding: 8vh 6vw 6vh;
     display:grid;
@@ -62,7 +61,7 @@
     font-family:'Space Mono', monospace;
     font-size: 12px;
     letter-spacing: 0.15em;
-    color: var(--copper);
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 18px;
     display:block;
@@ -81,8 +80,132 @@
     font-size: 15px;
     line-height: 1.6;
   }
+  .specimen-stage{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 760px){
+    .specimen-stage{ grid-template-columns: 1fr; }
+  }
+  .specimen-viewer{
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    background: var(--panel);
+    cursor: grab;
+  }
+  .specimen-viewer:active{ cursor: grabbing; }
+  .specimen-viewer canvas{ display:block; width:100% !important; height:100% !important; }
+  .specimen-hint{
+    position:absolute; bottom:12px; left:12px;
+    font-family:'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    background: rgba(13,15,18,0.75);
+    padding: 5px 9px;
+    border-radius: 3px;
+    pointer-events:none;
+  }
 
-  /* --- Compare component --- */
+  .process{
+    padding: 4vh 6vw 10vh;
+    border-top: 1px solid var(--line);
+  }
+  .process-intro{
+    max-width: 60ch;
+    margin-bottom: 6vh;
+  }
+  .process-intro .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display:block;
+  }
+  .process-intro h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size: clamp(24px, 3vw, 32px);
+    max-width: 20ch;
+  }
+  .process-step{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items:center;
+    margin-bottom: 10vh;
+  }
+  .process-step:last-child{ margin-bottom: 0; }
+  .process-step:nth-child(odd) .process-text{ order: 2; }
+  @media (max-width: 860px){
+    .process-step{ grid-template-columns: 1fr; }
+    .process-step:nth-child(odd) .process-text{ order: 0; }
+  }
+  .process-text .step-num{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    display:block;
+    margin-bottom: 10px;
+  }
+  .process-text h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  .process-text p{
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 42ch;
+  }
+
+  .teaser-list{
+    display:flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+  .teaser-row{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--line);
+    text-decoration:none;
+    color: var(--text);
+    transition: opacity 0.15s ease;
+  }
+  .teaser-row:hover{ opacity: 0.6; }
+  .teaser-row .t-name{
+    font-family:'Fraunces', serif;
+    font-size: 18px;
+  }
+  .teaser-row .t-meta{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .teaser-row .t-arrow{ color: var(--accent); font-size: 18px; }
+  .teaser-cta{
+    margin-top: 28px;
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    text-decoration:none;
+    border-bottom: 1px solid var(--accent-dim);
+    padding-bottom: 3px;
+  }
+
   .compare{
     position: relative;
     width: 100%;
@@ -101,29 +224,26 @@
   .compare-before{ position:absolute; inset:0; }
   .compare-handle{
     position:absolute; top:0; bottom:0; left:50%;
-    width: 2px; background: var(--copper);
+    width: 2px; background: var(--accent);
     transform: translateX(-1px);
     pointer-events:none;
   }
   .compare-handle::after{
     content:'';
     position:absolute; top:50%; left:50%;
-    width: 40px; height:40px;
+    width: 28px; height:28px;
     transform: translate(-50%,-50%);
-    border-radius: 50%;
-    background: var(--copper);
-    border: 3px solid var(--bg);
+    border-radius: 2px;
+    background: var(--bg);
+    border: 1px solid var(--accent);
   }
   .compare-handle::before{
-    content:'‹ ›';
+    content:'↔';
     position:absolute; top:50%; left:50%;
-    transform: translate(-50%,-52%);
+    transform: translate(-50%,-54%);
     z-index:2;
-    color: var(--bg);
-    font-family:'Space Mono', monospace;
+    color: var(--accent);
     font-size: 13px;
-    font-weight:700;
-    letter-spacing: 0.1em;
   }
   .compare-tag{
     position:absolute; bottom:14px; left:14px;
@@ -150,9 +270,8 @@
     pointer-events:none;
   }
   .label-before{ left: 14px; color: var(--text-dim); }
-  .label-after{ right: 14px; color: var(--copper); }
+  .label-after{ right: 14px; color: var(--accent); }
 
-  /* --- Grid section --- */
   .grid-section{
     padding: 6vh 6vw 10vh;
   }
@@ -197,7 +316,7 @@
 <body>
 
 <header>
-  <div class="brand"><b>●</b> ATELIER SCAN — POST-PRODUCTION</div>
+  <div class="brand"><b>●</b> MACROPHOTOGRAPHIE — SCANS</div>
   <nav>
     <a href="#specimens">Spécimens</a>
     <a href="#">À propos</a>
@@ -207,34 +326,70 @@
 
 <section class="hero">
   <div class="hero-copy">
-    <span class="eyebrow">Restauration &amp; traitement de scans</span>
-    <h1>Chaque spécimen, du brut au fini.</h1>
-    <p>Comparateurs interactifs avant / après pour présenter le travail de nettoyage, de recalcul de texture et de correction colorimétrique effectué sur chaque scan d'insecte. Glissez le curseur pour comparer.</p>
+    <span class="eyebrow">Scans de spécimens</span>
+    <h1>Chaque spécimen, capturé dans le détail.</h1>
+    <p>Photogrammétrie et reconstruction 3D appliquées à l'entomologie — du sujet réel au modèle numérique manipulable.</p>
   </div>
-  <div class="compare compare-hero" id="hero-compare">
-    <div class="compare-after"></div>
-    <div class="compare-before"></div>
-    <div class="compare-handle"></div>
-    <span class="compare-side-label label-before">Brut</span>
-    <span class="compare-side-label label-after">Traité</span>
-    <span class="compare-tag">SPÉCIMEN N°00 — LUCANUS CERVUS — SCAN 10K</span>
+  <div class="specimen-stage">
+    <div class="specimen-viewer" id="viewer-1">
+      <span class="specimen-hint">Glisser pour tourner</span>
+    </div>
+    <div class="specimen-viewer" id="viewer-2">
+      <span class="specimen-hint">Glisser pour tourner</span>
+    </div>
+  </div>
+</section>
+
+<section class="process">
+  <div class="process-intro">
+    <span class="eyebrow">Le processus</span>
+    <h2>Du sujet physique au modèle numérique</h2>
+  </div>
+
+  <div class="process-step">
+    <div class="compare" id="step-1">
+      <div class="compare-after"></div>
+      <div class="compare-before"></div>
+      <div class="compare-handle"></div>
+      <span class="compare-side-label label-before">Photos brutes</span>
+      <span class="compare-side-label label-after">Nuage de points</span>
+    </div>
+    <div class="process-text">
+      <span class="step-num">ÉTAPE 01</span>
+      <h3>Capture photogrammétrique</h3>
+      <p>Une série de photos du spécimen est prise sous tous les angles, puis recoupée pour reconstruire sa géométrie réelle en trois dimensions.</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="compare" id="step-2">
+      <div class="compare-after"></div>
+      <div class="compare-before"></div>
+      <div class="compare-handle"></div>
+      <span class="compare-side-label label-before">Nuage de points</span>
+      <span class="compare-side-label label-after">Gaussian Splatting</span>
+    </div>
+    <div class="process-text">
+      <span class="step-num">ÉTAPE 02</span>
+      <h3>Reconstruction par Gaussian Splatting</h3>
+      <p>Le nuage de points est converti en un rendu continu par splats gaussiens, offrant un modèle plus fidèle et manipulable en temps réel.</p>
+    </div>
   </div>
 </section>
 
 <section class="grid-section" id="specimens">
-  <h2>Spécimens traités</h2>
-  <div class="sub">Glissez chaque curseur pour comparer le scan brut et le rendu final.</div>
-  <div class="grid" id="grid"></div>
+  <h2>Spécimens</h2>
+  <div class="sub">Un aperçu des scans réalisés — le détail de chaque spécimen est disponible sur sa page dédiée.</div>
+  <div class="teaser-list" id="teaser-list"></div>
 </section>
 
 <footer>
-  <span>ATELIER SCAN © 2026</span>
-  <span>Prototype — à remplacer par vos propres visuels</span>
+  <span>MACROPHOTOGRAPHIE - SCANS © 2026</span>
+  <span>Prototype - à remplacer par vos propres visuels</span>
 </footer>
 
 <script>
-/* ---------- Silhouettes SVG placeholder (à remplacer par vos scans réels) ---------- */
-function bugSVG({grain=false, tone='#8f8578', accent='#c97c4a', bg='#100e0c'}){
+function bugSVG({grain=false, tone='#7c8891', accent='#8ca3b3', bg='#0c0e11'}){
   const noise = grain ? `
     <filter id="n${Math.random()}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0"/></filter>
   ` : '';
@@ -262,7 +417,8 @@ function makeCompare(el, {before, after, tag}){
   el.querySelector('.compare-before').innerHTML = before;
   const beforeLayer = el.querySelector('.compare-before');
   const handle = el.querySelector('.compare-handle');
-  el.querySelector('.compare-tag').textContent = tag;
+  const tagEl = el.querySelector('.compare-tag');
+  if (tagEl) tagEl.textContent = tag;
   set(50);
   function set(pct){
     pct = Math.max(0, Math.min(100, pct));
@@ -280,44 +436,132 @@ function makeCompare(el, {before, after, tag}){
   window.addEventListener('pointerup', () => dragging = false);
 }
 
-/* Hero */
-makeCompare(document.getElementById('hero-compare'), {
-  before: bugSVG({grain:true, tone:'#6b6154', accent:'#7a6a52', bg:'#100e0c'}),
-  after: bugSVG({grain:false, tone:'#b08a5e', accent:'#e0975c', bg:'#171310'}),
-  tag: 'SPÉCIMEN N°00 — LUCANUS CERVUS — SCAN 10K'
+makeCompare(document.getElementById('step-1'), {
+  before: bugSVG({grain:true, tone:'#585c60', accent:'#4e5b63', bg:'#0c0e11'}),
+  after: bugSVG({grain:false, tone:'#7c8891', accent:'#8ca3b3', bg:'#13161a'}),
+  tag: ''
 });
 
-/* Grid specimens */
-const specimens = [
-  {name:'Spécimen N°01', meta:'Carabidae · Scan 6K · Nettoyage maillage'},
-  {name:'Spécimen N°02', meta:'Lucanidae · Scan 8K · Recalcul textures'},
-  {name:'Spécimen N°03', meta:'Cetoniinae · Scan 6K · Correction couleur'},
-  {name:'Spécimen N°04', meta:'Curculionidae · Scan 10K · Réduction bruit'},
-];
-const grid = document.getElementById('grid');
-specimens.forEach((s, i) => {
-  const card = document.createElement('div');
-  card.innerHTML = `
-    <div class="compare" id="c${i}">
-      <div class="compare-after"></div>
-      <div class="compare-before"></div>
-      <div class="compare-handle"></div>
-      <span class="compare-side-label label-before">Brut</span>
-      <span class="compare-side-label label-after">Traité</span>
-      <span class="compare-tag">${s.name}</span>
-    </div>
-    <div class="card-caption">
-      <span class="name">${s.name}</span>
-      <span class="meta">${s.meta}</span>
-    </div>
-  `;
-  grid.appendChild(card);
-  makeCompare(card.querySelector('.compare'), {
-    before: bugSVG({grain:true, tone:'#6b6154', accent:'#7a6a52', bg:'#100e0c'}),
-    after: bugSVG({grain:false, tone:'#b08a5e', accent:'#e0975c', bg:'#171310'}),
-    tag: s.name + ' — ' + s.meta
-  });
+makeCompare(document.getElementById('step-2'), {
+  before: bugSVG({grain:false, tone:'#7c8891', accent:'#8ca3b3', bg:'#13161a'}),
+  after: bugSVG({grain:false, tone:'#9aacb8', accent:'#b7c6cf', bg:'#171a1e'}),
+  tag: ''
 });
+
+const specimens = [
+  {name:'Spécimen N°01', meta:'Carabidae · Scan 6K'},
+  {name:'Spécimen N°02', meta:'Lucanidae · Scan 8K'},
+  {name:'Spécimen N°03', meta:'Cetoniinae · Scan 6K'},
+  {name:'Spécimen N°04', meta:'Curculionidae · Scan 10K'},
+];
+const teaserList = document.getElementById('teaser-list');
+specimens.forEach((s, i) => {
+  const row = document.createElement('a');
+  row.className = 'teaser-row';
+  row.href = `specimens.html#specimen-${i+1}`;
+  row.innerHTML = `
+    <span class="t-name">${s.name}</span>
+    <span class="t-meta">${s.meta}</span>
+    <span class="t-arrow">→</span>
+  `;
+  teaserList.appendChild(row);
+});
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/",
+    "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
+  }
+}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
+
+function initViewer(containerId, splatFile){
+
+  const container = document.getElementById(containerId);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x15181c);
+
+  const camera = new THREE.PerspectiveCamera(
+        45,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        10
+  );
+
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const spark = new SparkRenderer({ renderer });
+  scene.add(spark);
+
+  const splat = new SplatMesh({ url: splatFile });
+  scene.add(splat);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+
+  splat.initialized.then(() => {
+
+    console.log('Splat pret :', containerId);
+
+    const box = splat.getBoundingBox();
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const sorted = [size.x, size.y, size.z].sort((a, b) => a - b);
+    const maxSize = sorted[1] || 1; // valeur médiane des 3 axes, ignore l'axe le plus extrême
+
+    splat.position.sub(center);
+
+    camera.near = maxSize * 0.001;
+    camera.far = maxSize * 10;
+    camera.updateProjectionMatrix();
+    
+
+    //camera.position.set(maxSize*0.08, maxSize*0.08, maxSize * 0.01);
+    camera.position.set(maxSize*0.06, maxSize*0.09, maxSize * 0.005);
+    camera.lookAt(0, 0, 0);
+
+    controls.target.set(0, 0, 0);
+    controls.minDistance = maxSize * 0.07;
+    controls.maxDistance = maxSize * 5;
+    controls.update();
+
+    console.log('Axes:', size.x, size.y, size.z);
+    console.log('Taille:', size, 'maxSize:', maxSize);
+
+  }).catch((err) => {
+    console.error('Erreur de chargement du splat :', splatFile, err);
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+}
+
+
+initViewer('viewer-1', 'assets/models/argente_clean_vf.spz');
+initViewer('viewer-2', 'assets/models/argente_clean_vf.spz');
+
 </script>
 
 </body>
