@@ -1,0 +1,24 @@
+{
+  "name": "portfolio-scans",
+  "version": "1.0.0",
+  "description": "",
+  "main": "specimens-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlineBaumberger/portfolio-scans.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AlineBaumberger/portfolio-scans/issues"
+  },
+  "homepage": "https://github.com/AlineBaumberger/portfolio-scans#readme",
+  "devDependencies": {
+    "electron": "^44.0.0"
+  }
+}

@@ -3,565 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macrophotographie — Scans de spécimens</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #0d0f12;
-    --panel: #15181c;
-    --panel-2: #1a1e22;
-    --line: #292e34;
-    --accent: #8ca3b3;
-    --accent-dim: #566873;
-    --text: #e6e4df;
-    --text-dim: #83807a;
-  }
-  *{ box-sizing: border-box; margin:0; padding:0; }
-  html{ scroll-behavior: smooth; }
-  body{
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  ::selection{ background: var(--accent); color: #14120f; }
-
-  header{
-    padding: 28px 6vw 20px;
-    display:flex; justify-content:space-between; align-items:center;
-    border-bottom: 1px solid var(--line);
-  }
-  .brand{
-    font-family:'Space Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .brand b{ color: var(--accent); }
-  nav a{
-    color: var(--text-dim);
-    text-decoration:none;
-    font-size: 14px;
-    margin-left: 32px;
-    font-family:'Inter', sans-serif;
-    font-weight: 500;
-    letter-spacing: 0;
-  }
-  nav a:hover{ color: var(--text); }
-
-  .hero{
-    padding: 8vh 6vw 6vh;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .hero-copy .eyebrow{
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 18px;
-    display:block;
-  }
-  .hero-copy h1{
-    font-family:'Fraunces', serif;
-    font-weight: 500;
-    font-size: clamp(34px, 5vw, 64px);
-    line-height: 1.05;
-    max-width: 14ch;
-    margin-bottom: 20px;
-  }
-  .hero-copy p{
-    color: var(--text-dim);
-    max-width: 48ch;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-  .specimen-stage{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-  @media (max-width: 760px){
-    .specimen-stage{ grid-template-columns: 1fr; }
-  }
-  .specimen-viewer{
-    position: relative;
-    aspect-ratio: 4/3;
-    border-radius: 6px;
-    border: 1px solid var(--line);
-    overflow: hidden;
-    background: var(--panel);
-    cursor: grab;
-  }
-  .specimen-viewer:active{ cursor: grabbing; }
-  .specimen-viewer canvas{ display:block; width:100% !important; height:100% !important; }
-  .specimen-hint{
-    position:absolute; bottom:12px; left:12px;
-    font-family:'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    background: rgba(13,15,18,0.75);
-    padding: 5px 9px;
-    border-radius: 3px;
-    pointer-events:none;
-  }
-
-  .process{
-    padding: 4vh 6vw 10vh;
-    border-top: 1px solid var(--line);
-  }
-  .process-intro{
-    max-width: 60ch;
-    margin-bottom: 6vh;
-  }
-  .process-intro .eyebrow{
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    display:block;
-  }
-  .process-intro h2{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size: clamp(24px, 3vw, 32px);
-    max-width: 20ch;
-  }
-  .process-step{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items:center;
-    margin-bottom: 10vh;
-  }
-  .process-step:last-child{ margin-bottom: 0; }
-  .process-step:nth-child(odd) .process-text{ order: 2; }
-  @media (max-width: 860px){
-    .process-step{ grid-template-columns: 1fr; }
-    .process-step:nth-child(odd) .process-text{ order: 0; }
-  }
-  .process-text .step-num{
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    display:block;
-    margin-bottom: 10px;
-  }
-  .process-text h3{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size: 24px;
-    margin-bottom: 12px;
-  }
-  .process-text p{
-    color: var(--text-dim);
-    font-size: 14px;
-    line-height: 1.7;
-    max-width: 42ch;
-  }
-
-  .teaser-list{
-    display:flex;
-    flex-direction: column;
-    border-top: 1px solid var(--line);
-  }
-  .teaser-row{
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    padding: 20px 4px;
-    border-bottom: 1px solid var(--line);
-    text-decoration:none;
-    color: var(--text);
-    transition: opacity 0.15s ease;
-  }
-  .teaser-row:hover{ opacity: 0.6; }
-  .teaser-row .t-name{
-    font-family:'Fraunces', serif;
-    font-size: 18px;
-  }
-  .teaser-row .t-meta{
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-  .teaser-row .t-arrow{ color: var(--accent); font-size: 18px; }
-  .teaser-cta{
-    margin-top: 28px;
-    display:inline-block;
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    text-decoration:none;
-    border-bottom: 1px solid var(--accent-dim);
-    padding-bottom: 3px;
-  }
-
-  .compare{
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/10;
-    overflow: hidden;
-    border-radius: 6px;
-    border: 1px solid var(--line);
-    cursor: ew-resize;
-    background: #0f0d0b;
-    user-select: none;
-    touch-action: none;
-  }
-  .compare-hero{ aspect-ratio: 16/8; }
-  .compare svg{ position:absolute; top:0; left:0; width:100%; height:100%; display:block; }
-  .compare-after{ position:absolute; inset:0; }
-  .compare-before{ position:absolute; inset:0; }
-  .compare-handle{
-    position:absolute; top:0; bottom:0; left:50%;
-    width: 2px; background: var(--accent);
-    transform: translateX(-1px);
-    pointer-events:none;
-  }
-  .compare-handle::after{
-    content:'';
-    position:absolute; top:50%; left:50%;
-    width: 28px; height:28px;
-    transform: translate(-50%,-50%);
-    border-radius: 2px;
-    background: var(--bg);
-    border: 1px solid var(--accent);
-  }
-  .compare-handle::before{
-    content:'↔';
-    position:absolute; top:50%; left:50%;
-    transform: translate(-50%,-54%);
-    z-index:2;
-    color: var(--accent);
-    font-size: 13px;
-  }
-  .compare-tag{
-    position:absolute; bottom:14px; left:14px;
-    font-family:'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    background: rgba(19,17,16,0.82);
-    border: 1px solid var(--line);
-    padding: 6px 10px;
-    border-radius: 3px;
-    color: var(--text-dim);
-    pointer-events:none;
-  }
-  .compare-side-label{
-    position:absolute; top:14px;
-    font-family:'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 4px 8px;
-    border-radius: 3px;
-    background: rgba(19,17,16,0.82);
-    border: 1px solid var(--line);
-    pointer-events:none;
-  }
-  .label-before{ left: 14px; color: var(--text-dim); }
-  .label-after{ right: 14px; color: var(--accent); }
-
-  .grid-section{
-    padding: 6vh 6vw 10vh;
-  }
-  .grid-section h2{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size: 22px;
-    margin-bottom: 6px;
-  }
-  .grid-section .sub{
-    color: var(--text-dim);
-    font-size: 13px;
-    margin-bottom: 36px;
-  }
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 28px;
-  }
-  @media (max-width: 760px){
-    .grid{ grid-template-columns: 1fr; }
-  }
-  .card-caption{
-    margin-top: 10px;
-    display:flex; justify-content: space-between; align-items:baseline;
-    font-family:'Space Mono', monospace;
-    font-size: 12px;
-  }
-  .card-caption .name{ color: var(--text); }
-  .card-caption .meta{ color: var(--text-dim); }
-
-  footer{
-    padding: 30px 6vw 50px;
-    border-top: 1px solid var(--line);
-    color: var(--text-dim);
-    font-size: 12px;
-    font-family:'Space Mono', monospace;
-    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
-  }
-</style>
+<title>Scans de spécimens  Macrophotographie</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <div class="brand"><b>●</b> MACROPHOTOGRAPHIE — SCANS</div>
-  <nav>
-    <a href="#specimens">Spécimens</a>
-    <a href="#">À propos</a>
-    <a href="#">Contact</a>
-  </nav>
-</header>
+<a href="index.html" class="top-mark">Reepost</a>
 
 <section class="hero">
-  <div class="hero-copy">
-    <span class="eyebrow">Scans de spécimens</span>
-    <h1>Chaque spécimen, capturé dans le détail.</h1>
-    <p>Photogrammétrie et reconstruction 3D appliquées à l'entomologie — du sujet réel au modèle numérique manipulable.</p>
-  </div>
-  <div class="specimen-stage">
-    <div class="specimen-viewer" id="viewer-1">
-      <span class="specimen-hint">Glisser pour tourner</span>
-    </div>
-    <div class="specimen-viewer" id="viewer-2">
-      <span class="specimen-hint">Glisser pour tourner</span>
-    </div>
+  <h1>Scans de spécimens <br><em> Macrophotographie</em></h1>
+  <div class="credit">Reepost - Aline Baumberger</div>
+</section>
+
+<section class="hero-image">
+  <div class="frame">
+    <img src="assets/photos/all.png" alt="Scan macro d'un spécimen"
+         onerror="this.closest('.frame').style.display='flex';this.closest('.frame').style.alignItems='center';this.closest('.frame').style.justifyContent='center';this.replaceWith(Object.assign(document.createElement('div'),{textContent:'assets/photos/all.png',style:'font-size:11px;letter-spacing:.08em;color:#9a9a9a;text-transform:uppercase'}))">
   </div>
 </section>
 
 <section class="process">
-  <div class="process-intro">
-    <span class="eyebrow">Le processus</span>
-    <h2>Du sujet physique au modèle numérique</h2>
+  <div class="head">
+    <span class="eyebrow">Procédé</span>
+    <h2>De la prise de vue macro au modèle 3D</h2>
   </div>
-
-  <div class="process-step">
-    <div class="compare" id="step-1">
-      <div class="compare-after"></div>
-      <div class="compare-before"></div>
-      <div class="compare-handle"></div>
-      <span class="compare-side-label label-before">Photos brutes</span>
-      <span class="compare-side-label label-after">Nuage de points</span>
+  <div class="frise">
+    <div class="frise-step">
+      <span class="num">01</span>
+      <h3>Prise de vue macro</h3>
+      <p>Le spécimen est photographié sous tous les angles à l'aide d'un objectif macro 35mm et un éclairage contrôlé avec LED et Flash.</p>
     </div>
-    <div class="process-text">
-      <span class="step-num">ÉTAPE 01</span>
-      <h3>Capture photogrammétrique</h3>
-      <p>Une série de photos du spécimen est prise sous tous les angles, puis recoupée pour reconstruire sa géométrie réelle en trois dimensions.</p>
+    <div class="frise-step">
+      <span class="num">02</span>
+      <h3>Alignement photogrammétrique</h3>
+      <p>Les photos sont recoupées et traités pour reconstruire la géométrie réelle du sujet en trois dimensions.</p>
     </div>
-  </div>
-
-  <div class="process-step">
-    <div class="compare" id="step-2">
-      <div class="compare-after"></div>
-      <div class="compare-before"></div>
-      <div class="compare-handle"></div>
-      <span class="compare-side-label label-before">Nuage de points</span>
-      <span class="compare-side-label label-after">Gaussian Splatting</span>
+    <div class="frise-step">
+      <span class="num">03</span>
+      <h3>Gaussian Splatting</h3>
+      <p>Le nuage de points obtenu est converti en splats gaussiens à travers un processus de training sur Lichtfeld Studio.</p>
     </div>
-    <div class="process-text">
-      <span class="step-num">ÉTAPE 02</span>
-      <h3>Reconstruction par Gaussian Splatting</h3>
-      <p>Le nuage de points est converti en un rendu continu par splats gaussiens, offrant un modèle plus fidèle et manipulable en temps réel.</p>
+    <div class="frise-step">
+      <span class="num">04</span>
+      <h3>Export &amp; visualisation</h3>
+      <p>Le modèle final est exporté au format .spz et consultable directement dans le navigateur.</p>
     </div>
   </div>
 </section>
 
 <section class="grid-section" id="specimens">
-  <h2>Spécimens</h2>
-  <div class="sub">Un aperçu des scans réalisés — le détail de chaque spécimen est disponible sur sa page dédiée.</div>
-  <div class="teaser-list" id="teaser-list"></div>
+  <div class="head">
+    <div class="head-row">
+      <h2>Spécimens</h2>
+      <span class="select-hint">Sélectionner un scan pour le détail.</span>
+    </div>
+    <p class="note">
+      <strong>À noter :</strong> La restitution 3D présentée ici est en SPZ et non PLY, pour faciliter l'affichage dans le navigateur. Cela signifie que la qualité des textures et splats sont réduites (entre 50-70%) sur l'affichage 3D, les photos sont plus significatives de la qualité finale. Les modèles PLY sont disponibles sur demande.
+    </p>
+  </div>
+  <div class="specimen-grid" id="specimen-grid"></div>
 </section>
 
 <footer>
-  <span>MACROPHOTOGRAPHIE - SCANS © 2026</span>
-  <span>Prototype - à remplacer par vos propres visuels</span>
+  <span>Scans de spécimens - Macrophotographie</span>
+  <span>Reepost © 2026</span>
 </footer>
 
+<script src="specimens-data.js"></script>
 <script>
-function bugSVG({grain=false, tone='#7c8891', accent='#8ca3b3', bg='#0c0e11'}){
-  const noise = grain ? `
-    <filter id="n${Math.random()}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0"/></filter>
-  ` : '';
-  return `
-  <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">
-    <defs>${noise}</defs>
-    <rect width="400" height="250" fill="${bg}"/>
-    <ellipse cx="200" cy="140" rx="70" ry="95" fill="${tone}" opacity="0.9"/>
-    <ellipse cx="200" cy="70" rx="34" ry="30" fill="${tone}"/>
-    <line x1="200" y1="45" x2="180" y2="15" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="200" y1="45" x2="220" y2="15" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="150" y1="120" x2="90" y2="100" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="150" y1="150" x2="80" y2="150" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="150" y1="180" x2="95" y2="205" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="250" y1="120" x2="310" y2="100" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="250" y1="150" x2="320" y2="150" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="250" y1="180" x2="305" y2="205" stroke="${tone}" stroke-width="6" stroke-linecap="round"/>
-    <line x1="200" y1="55" x2="200" y2="225" stroke="${bg}" stroke-width="2" opacity="0.5"/>
-    ${grain ? `<rect width="400" height="250" filter="url(#n)"/>` : `<ellipse cx="175" cy="110" rx="20" ry="30" fill="${accent}" opacity="0.35"/>`}
-  </svg>`;
-}
-
-function makeCompare(el, {before, after, tag}){
-  el.querySelector('.compare-after').innerHTML = after;
-  el.querySelector('.compare-before').innerHTML = before;
-  const beforeLayer = el.querySelector('.compare-before');
-  const handle = el.querySelector('.compare-handle');
-  const tagEl = el.querySelector('.compare-tag');
-  if (tagEl) tagEl.textContent = tag;
-  set(50);
-  function set(pct){
-    pct = Math.max(0, Math.min(100, pct));
-    beforeLayer.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
-    handle.style.left = pct + '%';
-  }
-  let dragging = false;
-  function pctFromEvent(e){
-    const rect = el.getBoundingClientRect();
-    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-    return (x / rect.width) * 100;
-  }
-  el.addEventListener('pointerdown', e => { dragging = true; set(pctFromEvent(e)); });
-  window.addEventListener('pointermove', e => { if(dragging) set(pctFromEvent(e)); });
-  window.addEventListener('pointerup', () => dragging = false);
-}
-
-makeCompare(document.getElementById('step-1'), {
-  before: bugSVG({grain:true, tone:'#585c60', accent:'#4e5b63', bg:'#0c0e11'}),
-  after: bugSVG({grain:false, tone:'#7c8891', accent:'#8ca3b3', bg:'#13161a'}),
-  tag: ''
-});
-
-makeCompare(document.getElementById('step-2'), {
-  before: bugSVG({grain:false, tone:'#7c8891', accent:'#8ca3b3', bg:'#13161a'}),
-  after: bugSVG({grain:false, tone:'#9aacb8', accent:'#b7c6cf', bg:'#171a1e'}),
-  tag: ''
-});
-
-const specimens = [
-  {name:'Spécimen N°01', meta:'Carabidae · Scan 6K'},
-  {name:'Spécimen N°02', meta:'Lucanidae · Scan 8K'},
-  {name:'Spécimen N°03', meta:'Cetoniinae · Scan 6K'},
-  {name:'Spécimen N°04', meta:'Curculionidae · Scan 10K'},
-];
-const teaserList = document.getElementById('teaser-list');
-specimens.forEach((s, i) => {
-  const row = document.createElement('a');
-  row.className = 'teaser-row';
-  row.href = `specimens.html#specimen-${i+1}`;
-  row.innerHTML = `
-    <span class="t-name">${s.name}</span>
-    <span class="t-meta">${s.meta}</span>
-    <span class="t-arrow">→</span>
-  `;
-  teaserList.appendChild(row);
-});
-</script>
-
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/",
-    "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
-  }
-}
-</script>
-<script type="module">
-
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
-
-function initViewer(containerId, splatFile){
-
-  const container = document.getElementById(containerId);
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x15181c);
-
-  const camera = new THREE.PerspectiveCamera(
-        45,
-        container.clientWidth / container.clientHeight,
-        0.1,
-        10
-  );
-
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
-
-  const spark = new SparkRenderer({ renderer });
-  scene.add(spark);
-
-  const splat = new SplatMesh({ url: splatFile });
-  scene.add(splat);
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-
-  splat.initialized.then(() => {
-
-    console.log('Splat pret :', containerId);
-
-    const box = splat.getBoundingBox();
-    const center = box.getCenter(new THREE.Vector3());
-    const size = box.getSize(new THREE.Vector3());
-    const sorted = [size.x, size.y, size.z].sort((a, b) => a - b);
-    const maxSize = sorted[1] || 1; // valeur médiane des 3 axes, ignore l'axe le plus extrême
-
-    splat.position.sub(center);
-
-    camera.near = maxSize * 0.001;
-    camera.far = maxSize * 10;
-    camera.updateProjectionMatrix();
-    
-
-    //camera.position.set(maxSize*0.08, maxSize*0.08, maxSize * 0.01);
-    camera.position.set(maxSize*0.06, maxSize*0.09, maxSize * 0.005);
-    camera.lookAt(0, 0, 0);
-
-    controls.target.set(0, 0, 0);
-    controls.minDistance = maxSize * 0.07;
-    controls.maxDistance = maxSize * 5;
-    controls.update();
-
-    console.log('Axes:', size.x, size.y, size.z);
-    console.log('Taille:', size, 'maxSize:', maxSize);
-
-  }).catch((err) => {
-    console.error('Erreur de chargement du splat :', splatFile, err);
+  const grid = document.getElementById('specimen-grid');
+  SPECIMENS.forEach(s => {
+    const card = document.createElement('a');
+    card.className = 'specimen-card';
+    card.href = `specimen.html?id=${s.id}`;
+    card.innerHTML = `
+      <img src="${s.thumb}" alt="${s.name}"
+           onerror="this.style.background='#eee';this.removeAttribute('src')">
+      <div class="card-info">
+        <div class="card-name">${s.name}</div>
+        <div class="card-meta">${s.family}</div>
+      </div>
+    `;
+    grid.appendChild(card);
   });
-
-  function animate(){
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  });
-}
-
-
-initViewer('viewer-1', 'assets/models/argente_clean_vf.spz');
-initViewer('viewer-2', 'assets/models/argente_clean_vf.spz');
-
 </script>
 
 </body>

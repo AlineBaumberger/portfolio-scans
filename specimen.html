@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spécimen — Scans de spécimens</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a href="index.html" class="top-mark">Reepost</a>
+
+<section class="detail-header">
+  <a href="index.html" class="back-link">← Tous les spécimens</a>
+  <h1 id="d-name">—<span class="latin" id="d-latin"></span></h1>
+  <div class="meta-line" id="d-family"></div>
+</section>
+
+<section class="viewer-section">
+  <div class="specimen-viewer" id="viewer">
+    <div class="loading" id="loading">Chargement du modèle…</div>
+    <span class="hint">Glisser pour tourner · molette pour zoomer</span>
+  </div>
+</section>
+
+<section class="description-section">
+  <p id="d-description"></p>
+  <div class="facts" id="d-facts"></div>
+</section>
+
+<section class="gallery-section">
+  <div class="head">
+    <span class="eyebrow">Photographies</span>
+  </div>
+  <div class="gallery" id="d-gallery"></div>
+</section>
+
+<div class="detail-nav">
+  <a href="#" id="nav-prev">← Précédent</a>
+  <a href="index.html">Tous les spécimens</a>
+  <a href="#" id="nav-next">Suivant →</a>
+</div>
+
+<script src="specimens-data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || (SPECIMENS[0] && SPECIMENS[0].id);
+  const index = SPECIMENS.findIndex(s => s.id === id);
+  const specimen = SPECIMENS[index] || SPECIMENS[0];
+
+  document.title = `${specimen.name} — Scans de spécimens`;
+  document.getElementById('d-name').innerHTML = `${specimen.name}<span class="latin">${specimen.latin || ''}</span>`;
+  document.getElementById('d-family').textContent = specimen.family || '';
+  document.getElementById('d-description').textContent = specimen.description || '';
+  window.CURRENT_SPLAT = specimen.splat;
+
+  const factsEl = document.getElementById('d-facts');
+  Object.entries(specimen.facts || {}).forEach(([label, value]) => {
+    const div = document.createElement('div');
+    div.innerHTML = `<div class="fact-label">${label}</div><div class="fact-value">${value}</div>`;
+    factsEl.appendChild(div);
+  });
+
+  const galleryEl = document.getElementById('d-gallery');
+  (specimen.gallery || []).forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = specimen.name;
+    img.onerror = () => { img.style.background = '#eee'; img.removeAttribute('src'); };
+    galleryEl.appendChild(img);
+  });
+
+  const prevSpecimen = SPECIMENS[(index - 1 + SPECIMENS.length) % SPECIMENS.length];
+  const nextSpecimen = SPECIMENS[(index + 1) % SPECIMENS.length];
+  const prevLink = document.getElementById('nav-prev');
+  const nextLink = document.getElementById('nav-next');
+  if (prevSpecimen){ prevLink.href = `specimen.html?id=${prevSpecimen.id}`; prevLink.textContent = `← ${prevSpecimen.name}`; }
+  if (nextSpecimen){ nextLink.href = `specimen.html?id=${nextSpecimen.id}`; nextLink.textContent = `${nextSpecimen.name} →`; }
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/",
+    "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
+
+function initViewer(containerId, splatFile){
+  const container = document.getElementById(containerId);
+  const loadingEl = document.getElementById('loading');
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf4f4f4);
+
+  const camera = new THREE.PerspectiveCamera(
+    45,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    10
+  );
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const spark = new SparkRenderer({ renderer });
+  scene.add(spark);
+
+  const splat = new SplatMesh({ url: splatFile });
+  scene.add(splat);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+
+  splat.initialized.then(() => {
+    if (loadingEl) loadingEl.remove();
+
+    const box = splat.getBoundingBox();
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const sorted = [size.x, size.y, size.z].sort((a, b) => a - b);
+    const maxSize = sorted[1] || 1;
+
+    splat.position.sub(center);
+
+    camera.near = maxSize * 0.001;
+    camera.far = maxSize * 10;
+    camera.updateProjectionMatrix();
+
+    camera.position.set(maxSize * 0.06, maxSize * 0.09, maxSize * 0.005);
+    camera.lookAt(0, 0, 0);
+
+    controls.target.set(0, 0, 0);
+    controls.minDistance = maxSize * 0.07;
+    controls.maxDistance = maxSize * 5;
+    controls.update();
+  }).catch((err) => {
+    console.error('Erreur de chargement du splat :', splatFile, err);
+    if (loadingEl) loadingEl.textContent = 'Modèle indisponible';
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+}
+
+initViewer('viewer', window.CURRENT_SPLAT);
+</script>
+
+</body>
+</html>
